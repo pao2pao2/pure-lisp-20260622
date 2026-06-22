@@ -30,6 +30,20 @@ lisp_obj* create_symbol(char* name) {
 	return obj;
 }
 
+// --- PRINT ---
+void print_obj(lisp_obj* obj) {
+	// NIL
+	if (obj == NULL) {
+		printf("nil");
+		return;
+	}
+
+	// シンボル
+	if (obj->type == LISP_SYMBOL) {
+		printf("%s", obj->val.symbol);
+	}
+}
+
 int main(void) {
 	char input[256];
 	printf("Welcome to Pure Lisp (Phase 1) \n");
@@ -45,7 +59,9 @@ int main(void) {
 			strcmp(input, "(bye)") == 0) break;
 		if (strlen(input) == 0) continue;
 
-		printf("%s", input);
+		lisp_obj* tmp_obj = create_symbol(input);
+
+		print_obj(tmp_obj);
 		putchar('\n');
 	}
 
