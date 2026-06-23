@@ -30,6 +30,29 @@ lisp_obj* create_symbol(char* name) {
 	return obj;
 }
 
+// --- READ ---
+
+void skipsp(char** input) {
+	while (**input == ' ') { (*input)++; }
+}
+
+lisp_obj* read_expr(char** input) {
+	// スペースを読み飛ばす
+	skipsp(input);
+
+	// シンボルの読み取り
+	char buf[256];
+	int i = 0;
+	while (**input != '\0') {
+		buf[i++] = **input;
+		(*input)++;
+		if (i >= 255) break;
+	}
+	buf[i] = '\0';
+
+	return create_symbol(buf);
+}
+
 // --- PRINT ---
 void print_obj(lisp_obj* obj) {
 	// NIL
@@ -59,9 +82,10 @@ int main(void) {
 			strcmp(input, "(bye)") == 0) break;
 		if (strlen(input) == 0) continue;
 
-		lisp_obj* tmp_obj = create_symbol(input);
+		char* p = input;
+		lisp_obj* parsed = read_expr(&p);
 
-		print_obj(tmp_obj);
+		print_obj(parsed);
 		putchar('\n');
 	}
 
