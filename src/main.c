@@ -119,6 +119,23 @@ void print_obj(lisp_obj* obj) {
 	if (obj->type == LISP_SYMBOL) {
 		printf("%s", obj->val.symbol);
 	}
+
+	if (obj->type == LISP_LIST) {
+		putchar('(');
+
+		lisp_obj* curr = obj;
+		while (curr != NULL) {
+			// リスト要素を出力
+			print_obj(curr->val.list.car);
+
+			// 次のセルへ
+			curr = curr->val.list.cdr;
+			if (curr != NULL) {
+				putchar(' ');
+			}
+		}
+		putchar(')');
+	}
 }
 
 int main(void) {
