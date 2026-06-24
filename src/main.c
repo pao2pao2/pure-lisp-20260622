@@ -54,8 +54,57 @@ lisp_obj* read_expr(char** input) {
 	// スペースを読み飛ばす
 	skipsp(input);
 
+	// リストの読み取り
+	if (**input == '(') {
+		// ポインタを進める
+		(*input)++; 
+
+		// リストの先頭
+		lisp_obj* head = NULL;
+		// リストの末尾
+		lisp_obj* tail = NULL;
+
+		while (1) {
+			// スペースを飛ばす
+			skipsp(input);
+
+			// 閉じカッコが見つかったら終了
+			if (**input == ')') {
+				(*input)++;
+
+				// 先頭（なにも読んでいなければNULL（空リスト））を返す
+				return head;
+			}
+
+			// 文字列終端に達したら、閉じカッコ忘れ
+			if (**input == '\0') {
+				return NULL;
+			}
+
+			// 次の要素を再帰的に読み取る
+			lisp_obj* obj = read_expr(input);
+
+			// 新しいコンスセルを作って繋ぐ
+			lisp_obj* new_cell = malloc(sizeof(lisp_obj));
+			new_cell->type = LISP_LIST;
+			new_cell->val.list.car = obj;
+			new_cell->val.list.cdr = NULL;
+
+			if (head == NULL) {
+				head = tail = new_cell;
+			} else {
+				tail->val.list.cdr = new_cell;
+				tail = new_cell;
+			}
+		}
+	}
+
 	// シンボルの読み取り
-	return read_symbol(input);
+	if (isalnum(**input)) {
+		return read_symbol(input);
+	}
+
+	return NULL;
 }
 
 // --- PRINT ---
