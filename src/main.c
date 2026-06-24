@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 // --- Lispオブジェクトの型 ---
 typedef enum {
@@ -36,14 +37,10 @@ void skipsp(char** input) {
 	while (**input == ' ') { (*input)++; }
 }
 
-lisp_obj* read_expr(char** input) {
-	// スペースを読み飛ばす
-	skipsp(input);
-
-	// シンボルの読み取り
+lisp_obj* read_symbol(char** input) {
 	char buf[256];
 	int i = 0;
-	while (**input != '\0') {
+	while (**input != '\0' && isalnum(**input)) {
 		buf[i++] = **input;
 		(*input)++;
 		if (i >= 255) break;
@@ -51,6 +48,14 @@ lisp_obj* read_expr(char** input) {
 	buf[i] = '\0';
 
 	return create_symbol(buf);
+}
+
+lisp_obj* read_expr(char** input) {
+	// スペースを読み飛ばす
+	skipsp(input);
+
+	// シンボルの読み取り
+	return read_symbol(input);
 }
 
 // --- PRINT ---
