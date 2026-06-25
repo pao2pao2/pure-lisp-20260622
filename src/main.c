@@ -50,7 +50,13 @@ char* lsym(lisp_obj* obj) {
 	return obj->val.symbol;
 }
 
-
+lisp_obj* lcons(lisp_obj* first, lisp_obj* second) {
+	lisp_obj* new_cell = malloc(sizeof(lisp_obj));
+	new_cell->type = LISP_LIST;
+	new_cell->val.list.car = first;
+	new_cell->val.list.cdr = second;
+	return new_cell;
+}
 
 // --- READ ---
 
@@ -106,10 +112,7 @@ lisp_obj* read_expr(char** input) {
 			lisp_obj* obj = read_expr(input);
 
 			// 新しいコンスセルを作って繋ぐ
-			lisp_obj* new_cell = malloc(sizeof(lisp_obj));
-			new_cell->type = LISP_LIST;
-			new_cell->val.list.car = obj;
-			new_cell->val.list.cdr = NULL;
+			lisp_obj* new_cell = lcons(obj, NULL);
 
 			if (head == NULL) {
 				head = tail = new_cell;
