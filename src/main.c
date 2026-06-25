@@ -31,6 +31,13 @@ lisp_obj* create_symbol(char* name) {
 	return obj;
 }
 
+// --- helper functions ---
+char* lsym(lisp_obj* obj) {
+	if (obj == NULL) return NULL;
+	if (obj->type != LISP_SYMBOL) return NULL;
+	return obj->val.symbol;
+}
+
 // --- READ ---
 
 void skipsp(char** input) {
@@ -117,9 +124,10 @@ void print_obj(lisp_obj* obj) {
 
 	// シンボル
 	if (obj->type == LISP_SYMBOL) {
-		printf("%s", obj->val.symbol);
+		printf("%s", lsym(obj));
 	}
 
+	// リスト
 	if (obj->type == LISP_LIST) {
 		putchar('(');
 
