@@ -100,8 +100,7 @@ lisp_obj* read_expr(char** input) {
 			if (head == NULL) {
 				head = tail = new_cell;
 			} else {
-				tail->val.list.cdr = new_cell;
-				tail = new_cell;
+				tail = tail->val.list.cdr = new_cell;
 			}
 		}
 	}
