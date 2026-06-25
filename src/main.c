@@ -32,11 +32,19 @@ lisp_obj* create_symbol(char* name) {
 }
 
 // --- helper functions ---
+lisp_obj* lcar(lisp_obj* obj) {
+	if (obj == NULL) return NULL;
+	if (obj->type != LISP_LIST) return NULL;
+	return obj->val.list.car;
+}
+
 char* lsym(lisp_obj* obj) {
 	if (obj == NULL) return NULL;
 	if (obj->type != LISP_SYMBOL) return NULL;
 	return obj->val.symbol;
 }
+
+
 
 // --- READ ---
 
@@ -133,7 +141,7 @@ void print_obj(lisp_obj* obj) {
 		lisp_obj* curr = obj;
 		while (curr != NULL) {
 			// リスト要素を出力
-			print_obj(curr->val.list.car);
+			print_obj(lcar(curr));
 
 			// 次のセルへ
 			curr = curr->val.list.cdr;
