@@ -38,6 +38,12 @@ lisp_obj* lcar(lisp_obj* obj) {
 	return obj->val.list.car;
 }
 
+lisp_obj* lcdr(lisp_obj* obj) {
+	if (obj == NULL) return NULL;
+	if (obj->type != LISP_LIST) return NULL;
+	return obj->val.list.cdr;
+}
+
 char* lsym(lisp_obj* obj) {
 	if (obj == NULL) return NULL;
 	if (obj->type != LISP_SYMBOL) return NULL;
@@ -144,7 +150,7 @@ void print_obj(lisp_obj* obj) {
 			print_obj(lcar(curr));
 
 			// 次のセルへ
-			curr = curr->val.list.cdr;
+			curr = lcdr(curr);
 			if (curr != NULL) {
 				putchar(' ');
 			}
