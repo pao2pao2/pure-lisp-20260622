@@ -130,6 +130,11 @@ lisp_obj* read_expr(char** input) {
 	return NULL;
 }
 
+// --- EVAL ---
+lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
+	return obj;
+}
+
 // --- PRINT ---
 void print_obj(lisp_obj* obj) {
 	// NIL
@@ -166,6 +171,8 @@ int main(void) {
 	char input[256];
 	printf("Welcome to Pure Lisp (Phase 1) \n");
 
+	lisp_obj* global_env = NULL;
+
 	while (1) {
 		printf("> ");
 		if (fgets(input, sizeof(input), stdin) == NULL) break;
@@ -180,7 +187,9 @@ int main(void) {
 		char* p = input;
 		lisp_obj* parsed = read_expr(&p);
 
-		print_obj(parsed);
+		lisp_obj* evaluated = lisp_eval(parsed, &global_env);
+
+		print_obj(evaluated);
 		putchar('\n');
 	}
 
