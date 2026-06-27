@@ -199,12 +199,12 @@ void print_obj(lisp_obj* obj) {
 	}
 
 	// シンボル
-	if (obj->type == LISP_SYMBOL) {
+	if (issym(obj)) {
 		printf("%s", lsym(obj));
 	}
 
 	// リスト
-	if (!islist(obj)) {
+	if (islist(obj)) {
 		putchar('(');
 
 		lisp_obj* curr = obj;
