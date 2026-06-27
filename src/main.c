@@ -36,15 +36,17 @@ int issym(lisp_obj* obj) {
 	return obj == NULL || obj->type == LISP_SYMBOL;
 }
 
+int islist(lisp_obj* obj) {
+	return obj != NULL && obj->type == LISP_LIST;
+}
+
 lisp_obj* lcar(lisp_obj* obj) {
-	if (obj == NULL) return NULL;
-	if (obj->type != LISP_LIST) return NULL;
+	if (!islist(obj)) return NULL;
 	return obj->val.list.car;
 }
 
 lisp_obj* lcdr(lisp_obj* obj) {
-	if (obj == NULL) return NULL;
-	if (obj->type != LISP_LIST) return NULL;
+	if (!islist(obj)) return NULL;
 	return obj->val.list.cdr;
 }
 
@@ -140,8 +142,7 @@ lisp_obj* read_expr(char** input) {
 lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
 	if (symbol == NULL) return NULL;
 	if (!issym(symbol)) return NULL;
-	if (env == NULL) return NULL;
-	if (env->type != LISP_LIST) return NULL;
+	if (!islist(env)) return NULL;
 
 	// (KEY . VALUE) のペア
 	lisp_obj* pair = lcar(env);
@@ -175,7 +176,7 @@ void print_obj(lisp_obj* obj) {
 	}
 
 	// リスト
-	if (obj->type == LISP_LIST) {
+	if (!islist(obj)) {
 		putchar('(');
 
 		lisp_obj* curr = obj;
