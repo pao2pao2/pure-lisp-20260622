@@ -171,6 +171,19 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 
 	// リストの評価
 	if (islist(obj)) {
+		lisp_obj* first = lcar(obj);
+
+		// --- パターンA: 先頭がシンボル ---
+		if (issym(first)) {
+			char* op = lsym(first);
+
+			// 【特殊形式】quote, cond, define, lambda...
+
+			// --- quote: 評価しない ---
+			if (strcmp(op, "quote") == 0) {
+				return lcar(lcdr(obj));
+			}
+		}
 		return obj;
 	}
 
