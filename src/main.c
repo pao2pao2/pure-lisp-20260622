@@ -183,6 +183,36 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 			if (strcmp(op, "quote") == 0) {
 				return lcar(lcdr(obj));
 			}
+
+			// --- cond: 条件分岐 ---
+			if (strcmp(op, "cond") == 0) {
+				// 条件と式のペアのリスト、 ((条件1 式1) (条件2 式2) ...) を取り出す
+				lisp_obj* clauses = lcdr(obj);
+
+				while (islist(clauses)) {
+					// 現在見ているペア
+					lisp_obj* clause = lcar(clauses);
+
+					if (islist(clause)) {
+						// 条件式
+						lisp_obj* cond_expr = lcar(clause);
+
+						// 条件式の評価
+						lisp_obj* cond_res = lisp_eval(cond_expr, env);
+
+						if (cond_res != NULL &&
+								!(issym(cond_res) && strcmp(lsym(cond_res), "NIL") == 0)) {
+							return lisp_eval(lcar(lcdr(clause)), env);
+						}
+					}
+
+					// 次のペアへ
+					clauses = lcdr(clauses);
+				}
+
+				// どこにもヒットしなければ NIL
+				return NULL;
+			}
 		}
 		return obj;
 	}
