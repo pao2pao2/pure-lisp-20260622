@@ -159,6 +159,15 @@ lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
 }
 
 lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
+	if (obj == NULL) return NULL;
+
+	// シンボルの評価
+	if (issym(obj)) {
+		lisp_obj* val = env_lookup(obj, *env);
+		if (val != NULL) return val;
+		return obj;
+	}
+
 	return obj;
 }
 
