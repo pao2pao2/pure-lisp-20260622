@@ -32,6 +32,10 @@ lisp_obj* create_symbol(char* name) {
 }
 
 // --- helper functions ---
+int issym(lisp_obj* obj) {
+	return obj == NULL || obj->type == LISP_SYMBOL;
+}
+
 lisp_obj* lcar(lisp_obj* obj) {
 	if (obj == NULL) return NULL;
 	if (obj->type != LISP_LIST) return NULL;
@@ -46,7 +50,7 @@ lisp_obj* lcdr(lisp_obj* obj) {
 
 char* lsym(lisp_obj* obj) {
 	if (obj == NULL) return NULL;
-	if (obj->type != LISP_SYMBOL) return NULL;
+	if (!issym(obj)) return NULL;
 	return obj->val.symbol;
 }
 
@@ -135,7 +139,7 @@ lisp_obj* read_expr(char** input) {
 // return: (KEY . VALUE) のドット対
 lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
 	if (symbol == NULL) return NULL;
-	if (symbol->type != LISP_SYMBOL) return NULL;
+	if (!issym(symbol)) return NULL;
 	if (env == NULL) return NULL;
 	if (env->type != LISP_LIST) return NULL;
 
