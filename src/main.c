@@ -165,6 +165,12 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 	if (issym(obj)) {
 		lisp_obj* val = env_lookup(obj, *env);
 		if (val != NULL) return val;
+		// TODO: 環境になければ、 NIL を返す
+		return obj;
+	}
+
+	// リストの評価
+	if (islist(obj)) {
 		return obj;
 	}
 
