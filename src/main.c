@@ -131,6 +131,28 @@ lisp_obj* read_expr(char** input) {
 }
 
 // --- EVAL ---
+// env_lookup: 環境からからシンボルの値を検索する
+// return: (KEY . VALUE) のドット対
+lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
+	if (symbol == NULL) return NULL;
+	if (symbol->type != LISP_SYMBOL) return NULL;
+	if (env == NULL) return NULL;
+	if (env->type != LISP_LIST) return NULL;
+
+	// (KEY . VALUE) のペア
+	lisp_obj* pair = lcar(env);
+	// KEY
+	lisp_obj* key = lcar(pair);
+
+	// 検索キーと等しければ、 (KEY . VALUE) のペアを返す
+	if (strcmp(lsym(key), lsym(symbol)) == 0) {
+		return pair;
+	}
+
+	// 次のペアへ
+	return env_lookup(symbol, lcdr(env));
+}
+
 lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 	return obj;
 }
