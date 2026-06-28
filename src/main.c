@@ -158,6 +158,12 @@ lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
 	return env_lookup(symbol, lcdr(env));
 }
 
+// env_bind: 環境に1個の束縛を追加する
+lisp_obj* env_bind(lisp_obj* var, lisp_obj* val, lisp_obj* env) {
+	if (var == NULL || !issym(var)) return env;
+	return lcons(lcons(var, val), env);
+}
+
 lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 	if (obj == NULL) return NULL;
 
@@ -228,8 +234,7 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				lisp_obj* val = lisp_eval(lcar(lcdr(arg_list)), env);
 
 				// (変数名 . 値) のドット対を環境に追加する
-				lisp_obj* pair = lcons(var, val);
-				*env = lcons(pair, *env);
+				*env = env_bind(var, val, *env);
 
 				// 登録した変数名を返す
 				return var;
