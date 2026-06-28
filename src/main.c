@@ -280,7 +280,6 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				lisp_obj* first_arg = lcar(args);
 
 				// 第2引数
-				if (!islist(lcdr(args))) return NULL;
 				lisp_obj* second_arg = lcar(lcdr(args));
 
 				return lcons(first_arg, second_arg);
@@ -312,14 +311,22 @@ void print_obj(lisp_obj* obj) {
 
 		lisp_obj* curr = obj;
 		while (curr != NULL) {
-			// リスト要素を出力
+			// リスト要素を再帰的に出力
 			print_obj(lcar(curr));
 
 			// 次のセルへ
-			curr = lcdr(curr);
-			if (curr != NULL) {
-				putchar(' ');
+			lisp_obj* next = lcdr(curr);
+			if (next == NULL) break;
+
+			// ドット対
+			if (issym(next)) {
+				printf(" . ");
+				print_obj(next);
+				break;
 			}
+
+			putchar(' ');
+			curr = next;
 		}
 		putchar(')');
 	}
