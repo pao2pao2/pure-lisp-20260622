@@ -213,7 +213,29 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				// どこにもヒットしなければ NIL
 				return NULL;
 			}
+
+			// --- define: 環境の永続化 ---
+			// 例: (define X APPLE) -> (X . APPLE) を取り出し、環境に追加する
+			if (strcmp(op, "define") == 0) {
+				lisp_obj* arg_list = lcdr(obj);
+				if (!islist(arg_list)) return NULL;
+
+				// 変数名を取り出す
+				lisp_obj* var = lcar(arg_list);
+				if (var == NULL || !issym(var)) return NULL;
+
+				// 値を取り出して、評価する
+				lisp_obj* val = lisp_eval(lcar(lcdr(arg_list)), env);
+
+				// (変数名 . 値) のドット対を環境に追加する
+				lisp_obj* pair = lcons(var, val);
+				*env = lcons(pair, *env);
+
+				// 登録した変数名を返す
+				return var;
+			}
 		}
+
 		return obj;
 	}
 
