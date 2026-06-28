@@ -288,7 +288,7 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 
 			// --- atom: 引数がシンボルなら T、リストなら NIL を返す ---
 			if (strcmp(op, "atom") == 0) {
-				if (args == NULL) return NULL;
+				if (!islist(args) == NULL) return NULL;
 
 				if (issym(lcar(args)))
 					return create_symbol("T");
