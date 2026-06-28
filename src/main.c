@@ -280,10 +280,20 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				lisp_obj* first_arg = lcar(args);
 
 				// 第2引数
-				if(lcdr(args) == NULL) return NULL;
+				if (lcdr(args) == NULL) return NULL;
 				lisp_obj* second_arg = lcar(lcdr(args));
 
 				return lcons(first_arg, second_arg);
+			}
+
+			// --- atom: 引数がシンボルなら T、リストなら NIL を返す ---
+			if (strcmp(op, "atom") == 0) {
+				if (args == NULL) return NULL;
+
+				if (issym(lcar(args)))
+					return create_symbol("T");
+
+				return NULL;
 			}
 		}
 
