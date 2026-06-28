@@ -280,6 +280,7 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				lisp_obj* first_arg = lcar(args);
 
 				// 第2引数
+				if(lcdr(args) == NULL) return NULL;
 				lisp_obj* second_arg = lcar(lcdr(args));
 
 				return lcons(first_arg, second_arg);
