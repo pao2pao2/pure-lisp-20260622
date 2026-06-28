@@ -23,6 +23,10 @@ typedef struct lisp_obj {
 	} val;
 } lisp_obj;
 
+// 関数プロトタイプ宣言
+lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env);
+lisp_obj* evlis(lisp_obj* args, lisp_obj** env);
+
 // シンボルのコンストラクタ
 lisp_obj* create_symbol(char* name) {
 	lisp_obj* obj = malloc(sizeof(lisp_obj));
@@ -158,12 +162,27 @@ lisp_obj* env_lookup(lisp_obj* symbol, lisp_obj* env) {
 	return env_lookup(symbol, lcdr(env));
 }
 
-// env_bind: 環境に1個の束縛を追加する
+// --- env_bind: 環境に1個の束縛を追加する ---
 lisp_obj* env_bind(lisp_obj* var, lisp_obj* val, lisp_obj* env) {
 	if (var == NULL || !issym(var)) return env;
 	return lcons(lcons(var, val), env);
 }
 
+// --- evlis: 引数の事前評価リストを作成する ---
+lisp_obj* evlis(lisp_obj* args, lisp_obj** env) {
+	if (!islist(args)) return NULL;
+
+	// 先頭の引数を評価する
+	lisp_obj* evaluated_car = lisp_eval(lcar(args), env);
+
+	// 残りの引数を再帰的に評価する
+	lisp_obj* evaluated_cdr = evlis(lcdr(args), env);
+
+	// 評価された結果同士を cons で新しくつなぐ
+	return lcons(evaluated_car, evaluated_cdr);
+}
+
+// --- lisp_eval: 評価ロジック本体 ---
 lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 	if (obj == NULL) return NULL;
 
@@ -239,6 +258,11 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				// 登録した変数名を返す
 				return var;
 			}
+
+			// 【通常関数】
+
+			// 評価済み引数リスト
+			lisp_obj* args = evlis(lcdr(obj), env);
 		}
 
 		return obj;
