@@ -280,6 +280,11 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				return var;
 			}
 
+			// --- lambda: 関数の設計図 ---
+			if (strcmp(op, "lambda") == 0) {
+				return obj;
+			}
+
 			// 【通常関数】
 
 			// 評価済み引数リスト
