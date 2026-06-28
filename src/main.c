@@ -168,6 +168,27 @@ lisp_obj* env_bind(lisp_obj* var, lisp_obj* val, lisp_obj* env) {
 	return lcons(lcons(var, val), env);
 }
 
+// --- env_extend: lambda の仮引数と実引数をドット対にして、環境を拡張する
+// params: 仮引数
+// args: 実引数
+// current_env: 既存の環境
+lisp_obj* env_extend(lisp_obj* params, lisp_obj* args, lisp_obj* current_env) {
+	if (!islist(params) || !islist(args)) {
+		return current_env;
+	}
+
+	lisp_obj* var = lcar(params);
+	lisp_obj* val = lcar(args);
+
+	lisp_obj* next_env = env_extend(lcdr(params), lcdr(args), current_env);
+
+	if (var == NULL || !issym(var)) {
+		return next_env;
+	}
+
+	return env_bind(var, val, next_env);
+}
+
 // --- evlis: 引数の事前評価リストを作成する ---
 lisp_obj* evlis(lisp_obj* args, lisp_obj** env) {
 	if (!islist(args)) return NULL;
