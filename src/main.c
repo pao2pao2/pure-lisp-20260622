@@ -163,7 +163,7 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 
 	// シンボルの評価
 	if (issym(obj)) {
-		lisp_obj* val = env_lookup(obj, *env);
+		lisp_obj* val = lcdr(env_lookup(obj, *env));
 		if (val != NULL) return val;
 		// TODO: 環境になければ、 NIL を返す
 		return obj;
