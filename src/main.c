@@ -347,6 +347,40 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 				// シンボル同士でない -> NIL
 				return NULL;
 			}
+
+			// --- ユーザ定義関数の呼び出し ---
+			lisp_obj* func_pair = env_lookup(first, *env);
+
+			if (islist(func_pair)) {
+				lisp_obj* func_closure = lcdr(func_pair);
+
+				if (islist(func_closure)) {
+					lisp_obj* lambda_sym = lcar(func_closure);
+
+					// 設計書の最初が "lambda" だったら
+					if (lambda_sym != NULL && issym(lambda_sym) &&
+							strcmp(lsym(lambda_sym), "lambda") == 0) {
+
+						lisp_obj* lambda_body_list = lcdr(func_closure);
+						if (!islist(lambda_body_list)) return NULL;
+
+						// 仮引数
+						lisp_obj* params = lcar(lambda_body_list);
+						// 実引数（argsは評価済み）
+
+						// 本体
+						lisp_obj* body = lcar(lcdr(lambda_body_list));
+						if (body == NULL) return NULL;
+
+						lisp_obj* local_env = env_extend(params, args, *env);
+
+						return lisp_eval(body, &local_env);
+					}
+				}
+			}
+
+			// 環境にない未知の関数なら、とりあえず NIL を返す
+			return NULL;
 		}
 
 		// --- パターンB: 先頭がリスト（lambda などの設計図）の場合
