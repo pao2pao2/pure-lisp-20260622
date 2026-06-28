@@ -344,9 +344,36 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 			}
 		}
 
+		// --- パターンB: 先頭がリスト（lambda などの設計図）の場合
+		if (islist(first)) {
+			// 先頭リストの先頭
+			lisp_obj* lambda_sym = lcar(first);
+
+			// それが "lambda" というシンボルなら、関数実行
+			if (issym(lambda_sym) && strcmp(lsym(lambda_sym), "lambda") == 0) {
+				lisp_obj* lambda_body_list = lcdr(first);
+				if (!islist(lambda_body_list)) return NULL;
+
+				// 仮引数リスト
+				lisp_obj* params = lcar(lambda_body_list);
+				// 本体の式
+				lisp_obj* body = lcar(lcdr(lambda_body_list));
+
+				// 実引数
+				lisp_obj* args = evlis(lcdr(obj), env);
+
+				// 仮引数と評価済みの実引数を束縛して新しいローカル環境を拵える
+				lisp_obj* local_env = env_extend(params, args, *env);
+
+				// 新しい環境を渡して、本体の式を評価する
+				return lisp_eval(body, &local_env);
+			}
+		}
+
 		return obj;
 	}
 
+	// どれにも当てはまらなければそのまま返す
 	return obj;
 }
 
