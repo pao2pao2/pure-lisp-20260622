@@ -268,6 +268,11 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 			if (strcmp(op, "car") == 0) {
 				return lcar(lcar(args));
 			}
+
+			// --- cdr: コンスセルの先頭を除いた残りのリストを取り出す ---
+			if (strcmp(op, "cdr") == 0) {
+				return lcdr(lcar(args));
+			}
 		}
 
 		return obj;
