@@ -295,6 +295,32 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 
 				return NULL;
 			}
+
+			// --- eq: ２つのシンボルが同じ名前かどうかを比べる ---
+			if (strcmp(op, "eq") == 0) {
+				if (!islist(args)) return NULL;
+				if (!islist(lcdr(args))) return NULL;
+
+				lisp_obj* first_arg = lcar(args);
+				lisp_obj* second_arg = lcar(lcdr(args));
+
+				if (issym(first_arg) && issym(second_arg)) {
+					// 両方とも NIL -> T
+					if (first_arg == NULL && second_arg == NULL)
+						return create_symbol("T");
+
+					// 片方だけ NIL -> NIL
+					if (first_arg == NULL && second_arg == NULL)
+						return NULL;
+
+					// シンボル同士が等しい -> T, 異なる -> NIL
+					if (strcmp(lsym(first_arg), lsym(second_arg)) == 0)
+						return create_symbol("T");
+				}
+
+				// シンボル同士でない -> NIL
+				return NULL;
+			}
 		}
 
 		return obj;
