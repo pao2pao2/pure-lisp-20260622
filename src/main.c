@@ -263,6 +263,11 @@ lisp_obj* lisp_eval(lisp_obj* obj, lisp_obj** env) {
 
 			// 評価済み引数リスト
 			lisp_obj* args = evlis(lcdr(obj), env);
+
+			// --- car: コンスセルの先頭を取り出す ---
+			if (strcmp(op, "car") == 0) {
+				return lcar(lcar(args));
+			}
 		}
 
 		return obj;
