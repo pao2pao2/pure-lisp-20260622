@@ -74,10 +74,15 @@ void skipsp(char** input) {
 	while (**input == ' ') { (*input)++; }
 }
 
+int issymchar(int c) {
+	return isalnum(c)
+			|| strchr("+-*/<>=", c);
+}
+
 lisp_obj* read_symbol(char** input) {
 	char buf[256];
 	int i = 0;
-	while (**input != '\0' && isalnum(**input)) {
+	while (**input != '\0' && issymchar(**input)) {
 		buf[i++] = **input;
 		(*input)++;
 		if (i >= 255) break;
@@ -133,7 +138,7 @@ lisp_obj* read_expr(char** input) {
 	}
 
 	// シンボルの読み取り
-	if (isalnum(**input)) {
+	if (issymchar(**input)) {
 		return read_symbol(input);
 	}
 
