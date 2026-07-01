@@ -456,30 +456,72 @@ void print_obj(lisp_obj* obj) {
 	}
 }
 
+// --- REPL ---
+
+int paren_depth(char* s) {
+	int depth = 0;
+
+	while (*s) {
+		if (*s == '(') depth++;
+		if (*s == ')') depth--;
+		s++;
+	}
+
+	return depth;
+}
+
 int main(void) {
 	char input[256];
-	printf("Welcome to Pure Lisp (Phase 1) \n");
+	char buffer[4096];
+	buffer[0] = '\0';
+
+	int depth = 0;
+
+	printf("Welcome to Pure Lisp! \n");
 
 	lisp_obj* global_env = NULL;
 
 	while (1) {
-		printf("> ");
+		printf(depth > 0 ? "... " : "> ");
+
+		// 入力
 		if (fgets(input, sizeof(input), stdin) == NULL) break;
 
 		// 改行を消す
-		input[strcspn(input, "\n")] = 0;
+		input[strcspn(input, "\n")] = '\0';
 
-		if (strcmp(input, "(exit)") == 0 ||
-			strcmp(input, "(bye)") == 0) break;
-		if (strlen(input) == 0) continue;
+		if (depth == 0 && 
+				(strcmp(input, "(exit)") == 0 || strcmp(input, "(bye)") == 0)) {
+			break;
+		}
 
-		char* p = input;
+		strcat(buffer, input);
+		strcat(buffer, " ");
+
+		depth += paren_depth(input);
+
+		if (depth > 0) {
+			continue;
+		}
+
+		if (depth < 0) {
+			printf("error: too many closing parens\n");
+			buffer[0] = '\0';
+			depth = 0;
+			continue;
+		}
+
+		if (strlen(buffer) == 0) continue;
+
+		char* p = buffer;
 		lisp_obj* parsed = read_expr(&p);
 
 		lisp_obj* evaluated = lisp_eval(parsed, &global_env);
 
 		print_obj(evaluated);
 		putchar('\n');
+
+		buffer[0] = '\0';
 	}
 
 	puts("Bye bye!");
