@@ -76,7 +76,7 @@ void skipsp(char** input) {
 
 int issymchar(int c) {
 	return isalnum(c)
-			|| strchr("+-*/<>=", c);
+			|| strchr("+-*/<>=_", c);
 }
 
 lisp_obj* read_symbol(char** input) {
