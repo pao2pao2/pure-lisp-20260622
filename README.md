@@ -66,6 +66,121 @@ a
 (a . a)
 ```
 
+## Examples
+
+### Basic functions
+
+#### `atom`
+
+値がシンボルかどうかを判定します。
+
+```lisp
+> (atom (quote a))
+T
+
+> (atom (quote (a b)))
+nil
+```
+
+#### `eq`
+
+2つのシンボルが同じかどうかを判定します。
+
+```lisp
+> (eq (quote a) (quote a))
+T
+
+> (eq (quote a) (quote b))
+nil
+```
+
+#### `car`
+
+リストの先頭を取り出します。
+
+```lisp
+> (car (quote (a b c)))
+a
+```
+
+#### `cdr`
+
+リストの先頭を除いた残りを取り出します。
+
+```lisp
+> (cdr (quote (a b c)))
+(b c)
+```
+
+#### `cons`
+
+2つの値を組み合わせます。
+
+```lisp
+> (cons (quote a) (quote (b c)))
+(a b c)
+
+> (cons (quote a) (quote b))
+(a . b)
+```
+
+### Special forms
+
+#### `quote`
+
+式を評価せず、そのままデータとして扱います。
+
+```lisp
+> (quote a)
+a
+
+> (quote (a b c))
+(a b c)
+```
+
+#### `cond`
+
+条件を上から順に評価し、最初に真になった式を評価します。
+
+```lisp
+> (cond
+...   ((eq (quote a) (quote b)) (quote no))
+...   ((quote T) (quote yes)))
+yes
+```
+
+#### `lambda`
+
+関数を作ります。
+
+```lisp
+> ((lambda (x) (cons x x)) (quote a))
+(a . a)
+```
+
+#### `define`
+
+シンボルに値を束縛します。
+
+```lisp
+> (define x (quote a))
+x
+
+> x
+a
+```
+
+関数を束縛することもできます。
+
+```lisp
+> (define duplicate
+...   (lambda (x) (cons x x)))
+duplicate
+
+> (duplicate (quote a))
+(a . a)
+```
+
 ## Purpose
 
 このプロジェクトの目的は、完成された高機能なLisp処理系を作ることだけではありません。
