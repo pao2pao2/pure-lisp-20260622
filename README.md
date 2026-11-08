@@ -32,6 +32,20 @@ READ → EVAL → PRINT → LOOP
 - `lambda`
 - `define`
 
+## Build and Run
+
+GCCが利用できる環境でビルドできます。
+
+```bash
+gcc -std=c11 -Wall src/main.c -o pure-lisp
+```
+
+ビルド後、生成された実行ファイルを起動します。
+
+```bash
+./pure-lisp
+```
+
 ## REPL
 
 REPL（Read-Eval-Print Loop）では、入力された式を読み取り、評価し、結果を表示します。
